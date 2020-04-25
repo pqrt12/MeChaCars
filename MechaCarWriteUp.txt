@@ -1,0 +1,85 @@
+# Challenge
+## MPG Regreesion
+### data input
+The data inputted from "MechaCar_mpg.csv" has a header like:
+  vehicle.length vehicle.weight spoiler.angle ground.clearance AWD      mpg
+1       14.69710       6407.946      48.78998         14.64098   1 49.04918
+2       12.53421       5182.081      90.00000         14.36668   1 36.76606
+3       20.00000       8337.981      78.63232         12.25371   0 80.00000
+4       13.42849       9419.671      55.93903         12.98936   1 18.94149
+5       15.44998       3772.667      26.12816         15.10396   1 63.82457  
+
+The column names are renamed to:
+    length   weight  s_angle clearance AWD      mpg
+1 14.69710 6407.946 48.78998  14.64098   1 49.04918
+2 12.53421 5182.081 90.00000  14.36668   1 36.76606
+
+### data correlations
+Among all factors, "length" and "clearance" are more related to "mpg".
+> cor(mpg_table)
+               length      weight     s_angle   clearance         AWD         mpg
+length     1.00000000 -0.12271790  0.02577114 -0.31663112  0.08565668  0.60947984
+weight    -0.12271790  1.00000000 -0.11307851  0.08511338 -0.03698098  0.09068314
+s_angle    0.02577114 -0.11307851  1.00000000 -0.21112057 -0.09120266 -0.02083999
+clearance -0.31663112  0.08511338 -0.21112057  1.00000000 -0.15214456  0.32874886
+AWD        0.08565668 -0.03698098 -0.09120266 -0.15214456  1.00000000 -0.14166977
+mpg        0.60947984  0.09068314 -0.02083999  0.32874886 -0.14166977  1.00000000
+
+### multiple linear regression
+Assume all factors are contributed to the "mpg", the multiple Linear Regression summary is:
+Call:
+lm(formula = mpg ~ length + weight + s_angle + clearance, data = mpg_table)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-21.3395  -4.1155  -0.2094   6.8789  17.2672 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -1.076e+02  1.576e+01  -6.823 1.87e-08 ***
+length       6.240e+00  6.609e-01   9.441 3.05e-12 ***
+weight       1.277e-03  6.948e-04   1.837   0.0728 .  
+s_angle      8.031e-02  6.656e-02   1.207   0.2339    
+clearance    3.659e+00  5.394e-01   6.784 2.13e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 8.853 on 45 degrees of freedom
+Multiple R-squared:  0.7032,	Adjusted R-squared:  0.6768 
+F-statistic: 26.65 on 4 and 45 DF,  p-value: 2.277e-11
+
+### multiple linear regression with selected factors
+It is clear that only "length", "clearance" and "(Intercept)" have an impact on the "mpg" cannot be explained with randomness. With "length", "clearance" only, the regression summary is:
+Call:
+lm(formula = mpg ~ length + clearance, data = mpg_table)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-17.493  -7.705   1.344   6.642  18.500 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -91.5573    13.9649  -6.556 3.86e-08 ***
+length        6.0811     0.6732   9.033 7.68e-12 ***
+clearance     3.5669     0.5401   6.604 3.26e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9.078 on 47 degrees of freedom
+Multiple R-squared:  0.674,	Adjusted R-squared:  0.6601 
+F-statistic: 48.59 on 2 and 47 DF,  p-value: 3.637e-12
+
+Or:
+mpg = 6.08 * vehicle.length + 3.56 * ground.clearance - 91.6
+
+This formula explains 67% of MechaCar's prototype mpg. The p_value is 3.6*10^(-12).
+
+### detailed MPG on AWD car
+A detailed analysis on AWD only car gives formula:
+mpg = 7.28 * vehicle.length + 4.70 * ground.clearance - 125.6
+which explains 77.4% MechaCar AWD prototype's mpg., The p_value is 8.0*10^(-8).
+
+### detailed MPG on non-AWD cars
+The non-AWD car has the regression formula:
+mpg = 5.18 * vehicle.length + 2.39 * ground.clearance - 60.8
+which explains 64.0% MechaCar non AWD prototype's mpg. The p_value is 1.33*10^(-5).   
